@@ -1,7 +1,7 @@
 import { routerRedux } from 'dva/router';
 import { fakeAccountLogin } from '../services/api';
 import { loginAdminUser } from '../services/lmapi';
-import { setAuthority } from '../utils/authority';
+import { setAuthority, setAuthorityCloud } from '../utils/authority';
 import { reloadAuthorized } from '../utils/Authorized';
 
 export default {
@@ -13,6 +13,7 @@ export default {
 
   effects: {
     *login({ payload }, { call, put }) {
+      // 官方演示登录
       const response = yield call(fakeAccountLogin, payload);
       yield put({
         type: 'changeLoginStatus',
@@ -45,13 +46,14 @@ export default {
       }
     },
     *cloudLogin({ payload }, { call, put }) {
+      // 对接ljdp后端登录
       const response = yield call(loginAdminUser, payload);
       yield put({
-        type: 'changeLoginStatus',
+        type: 'changeCloudLoginStatus',
         payload: response,
       });
       // Login successfully
-      if (response.status === 'ok') {
+      if (response.code === 200) {
         reloadAuthorized();
         yield put(routerRedux.push('/'));
       }
@@ -59,11 +61,27 @@ export default {
   },
 
   reducers: {
+    // 官方演示登录
     changeLoginStatus(state, { payload }) {
       setAuthority(payload.currentAuthority);
       return {
         ...state,
         status: payload.status,
+        type: payload.type,
+      };
+    },
+    // 对接ljdp后端登录
+    changeCloudLoginStatus(state, { payload }) {
+      setAuthorityCloud(payload.user);
+      let loginstatus = '';
+      if (payload.code === 200) {
+        loginstatus = 'ok';
+      } else {
+        loginstatus = 'error';
+      }
+      return {
+        ...state,
+        status: loginstatus,
         type: payload.type,
       };
     },
