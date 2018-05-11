@@ -49,12 +49,33 @@ export default function request(url, options) {
   const newOptions = { ...defaultOptions, ...options };
   if (newOptions.method === 'POST' || newOptions.method === 'PUT') {
     if (!(newOptions.body instanceof FormData)) {
-      newOptions.headers = {
-        Accept: 'application/json',
-        'Content-Type': 'application/json; charset=utf-8',
-        ...newOptions.headers,
-      };
-      newOptions.body = JSON.stringify(newOptions.body);
+      // console.log(newOptions['Content-Type']);
+      if (
+        newOptions['Content-Type'] &&
+        newOptions['Content-Type'].indexOf('x-www-form-urlencoded') > 0
+      ) {
+        newOptions.headers = {
+          Accept: 'application/json',
+          'Content-Type': 'application/x-www-form-urlencoded; charset=utf-8',
+          ...newOptions.headers,
+        };
+        let formparams = '';
+        Object.keys(options.body).forEach(key => {
+          if (formparams.length > 0) {
+            formparams += '&';
+          }
+          formparams = formparams + key + '=' + options.body[key];
+        });
+        newOptions.body = formparams;
+      } else {
+        newOptions.headers = {
+          Accept: 'application/json',
+          'Content-Type': 'application/json; charset=utf-8',
+          ...newOptions.headers,
+        };
+
+        newOptions.body = JSON.stringify(newOptions.body);
+      }
     } else {
       // newOptions.body is FormData
       newOptions.headers = {

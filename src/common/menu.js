@@ -154,6 +154,17 @@ const menuData = [
       },
     ],
   },
+  {
+    name: '我的例子',
+    icon: 'table',
+    path: 'example',
+    children: [
+      {
+        name: '分页表格',
+        path: 'main-list',
+      },
+    ],
+  },
 ];
 
 function formatter(data, parentPath = '/', parentAuthority) {
