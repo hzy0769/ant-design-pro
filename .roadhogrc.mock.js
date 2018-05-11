@@ -89,6 +89,14 @@ const proxy = {
       });
       return;
     }
+    if (password === '123456' && userName === 'guest') {
+      res.send({
+        status: 'ok',
+        type,
+        currentAuthority: 'guest',
+      });
+      return;
+    }
     res.send({
       status: 'error',
       type,

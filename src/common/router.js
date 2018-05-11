@@ -175,6 +175,7 @@ export const getRouterData = app => {
       component: dynamicWrapper(app, ['example', 'dictionary'], () =>
         import('../routes/Example/MainList')
       ),
+      authority: 'admin',
     },
   };
   // Get name from ./menu.js or just set it in the router data.

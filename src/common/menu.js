@@ -5,6 +5,7 @@ const menuData = [
     name: 'dashboard',
     icon: 'dashboard',
     path: 'dashboard',
+    authority: ['admin', 'user'],
     children: [
       {
         name: '分析页',
@@ -26,6 +27,7 @@ const menuData = [
     name: '表单页',
     icon: 'form',
     path: 'form',
+    authority: ['admin', 'user'],
     children: [
       {
         name: '基础表单',
@@ -46,6 +48,7 @@ const menuData = [
     name: '列表页',
     icon: 'table',
     path: 'list',
+    authority: ['admin', 'user'],
     children: [
       {
         name: '查询表格',
@@ -83,6 +86,7 @@ const menuData = [
     name: '详情页',
     icon: 'profile',
     path: 'profile',
+    authority: ['admin', 'user'],
     children: [
       {
         name: '基础详情页',
@@ -99,6 +103,7 @@ const menuData = [
     name: '结果页',
     icon: 'check-circle-o',
     path: 'result',
+    authority: ['admin', 'user'],
     children: [
       {
         name: '成功',
@@ -114,6 +119,7 @@ const menuData = [
     name: '异常页',
     icon: 'warning',
     path: 'exception',
+    authority: ['admin', 'user'],
     children: [
       {
         name: '403',
@@ -138,7 +144,7 @@ const menuData = [
     name: '账户',
     icon: 'user',
     path: 'user',
-    authority: 'guest',
+    authority: ['admin', 'user', 'guest'],
     children: [
       {
         name: '登录',
@@ -158,6 +164,7 @@ const menuData = [
     name: '我的例子',
     icon: 'table',
     path: 'example',
+    authority: 'admin',
     children: [
       {
         name: '分页表格',

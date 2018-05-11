@@ -1,5 +1,6 @@
 import { routerRedux } from 'dva/router';
 import { fakeAccountLogin } from '../services/api';
+import { loginAdminUser } from '../services/lmapi';
 import { setAuthority } from '../utils/authority';
 import { reloadAuthorized } from '../utils/Authorized';
 
@@ -41,6 +42,18 @@ export default {
         });
         reloadAuthorized();
         yield put(routerRedux.push('/user/login'));
+      }
+    },
+    *cloudLogin({ payload }, { call, put }) {
+      const response = yield call(loginAdminUser, payload);
+      yield put({
+        type: 'changeLoginStatus',
+        payload: response,
+      });
+      // Login successfully
+      if (response.status === 'ok') {
+        reloadAuthorized();
+        yield put(routerRedux.push('/'));
       }
     },
   },

@@ -22,3 +22,10 @@ export async function removeAdminUser(params) {
     body: params,
   });
 }
+export async function loginAdminUser(params) {
+  return request(`/admin/user/sysUser/login`, {
+    method: 'POST',
+    'Content-Type': 'application/x-www-form-urlencoded;',
+    body: params,
+  });
+}
