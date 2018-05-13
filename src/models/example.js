@@ -1,4 +1,4 @@
-import { searchAdminUser, saveAdminUser, removeAdminUser } from '../services/lmapi';
+import { searchAdminUser, saveAdminUser, removeAdminUser, getAdminUser } from '../services/lmapi';
 
 export default {
   namespace: 'example',
@@ -8,6 +8,7 @@ export default {
       list: [],
       pagination: {},
     },
+    domain: {},
   },
 
   effects: {
@@ -16,6 +17,20 @@ export default {
       yield put({
         type: 'updateList',
         payload: response,
+      });
+    },
+    *loadDomain({ payload, callback }, { call, put }) {
+      const response = yield call(getAdminUser, payload);
+      yield put({
+        type: 'updateDomain',
+        payload: response,
+      });
+      if (callback) callback(response);
+    },
+    *clearDomain({ payload }, { put }) {
+      yield put({
+        type: 'updateDomain',
+        payload: { ...payload, code: 200 },
       });
     },
     *save({ payload, callback }, { call }) {
@@ -40,6 +55,13 @@ export default {
       return {
         ...state,
         data: result,
+      };
+    },
+    updateDomain(state, action) {
+      const resp = action.payload;
+      return {
+        ...state,
+        domain: resp,
       };
     },
   },
