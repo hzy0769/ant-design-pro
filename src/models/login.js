@@ -63,8 +63,8 @@ export default {
   reducers: {
     // 官方演示登录
     changeLoginStatus(state, { payload }) {
+      setAuthorityCloud({ userAccount: '' }); // 官方演示登录的话，先退出我们的登录
       setAuthority(payload.currentAuthority);
-      setAuthorityCloud({ userAccount: '' }); // 官方演示登录的话，退出我们的登录
       return {
         ...state,
         status: payload.status,

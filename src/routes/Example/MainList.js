@@ -51,7 +51,7 @@ const CreateForm = Form.create({
     };
   },
 })(props => {
-  const { modalVisible, form, handleSave, handleModalVisible, dictionary } = props;
+  const { modalVisible, form, handleSave, handleModalVisible, dictionary, isNew } = props;
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
@@ -73,6 +73,7 @@ const CreateForm = Form.create({
           <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="用户名称">
             {form.getFieldDecorator('fullname', {
               rules: [{ required: true, message: '' }],
+              initialValue: '',
             })(<Input placeholder="请输入" />)}
           </FormItem>
         </Col>
@@ -80,6 +81,7 @@ const CreateForm = Form.create({
           <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="登录账号">
             {form.getFieldDecorator('account', {
               rules: [{ required: true, message: '' }],
+              initialValue: '',
             })(<Input placeholder="请输入" />)}
           </FormItem>
         </Col>
@@ -88,7 +90,8 @@ const CreateForm = Form.create({
         <Col md={12} sm={24}>
           <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="密码">
             {form.getFieldDecorator('password', {
-              rules: [{ required: true, message: '' }],
+              rules: [{ required: isNew, message: '' }],
+              initialValue: '',
             })(<Input placeholder="请输入" />)}
           </FormItem>
         </Col>
@@ -96,6 +99,7 @@ const CreateForm = Form.create({
           <FormItem labelCol={{ span: 5 }} wrapperCol={{ span: 15 }} label="手机号码">
             {form.getFieldDecorator('mobile', {
               rules: [{ required: true, message: '' }],
+              initialValue: '',
             })(<Input placeholder="请输入" />)}
           </FormItem>
         </Col>
@@ -143,6 +147,8 @@ export default class MainList extends PureComponent {
     modalVisible: false,
     selectedRows: [],
     formValues: {},
+    isNew: true,
+    editingKey: '',
   };
 
   componentDidMount() {
@@ -205,12 +211,11 @@ export default class MainList extends PureComponent {
     const { selectedRows } = this.state;
 
     if (!selectedRows) return;
-    const { confirm } = Modal.confirm;
     const onOkf = () => {
       dispatch({
         type: 'example/remove',
         payload: {
-          ids: selectedRows.map(row => row.key).join(','),
+          ids: selectedRows.map(row => row.userid).join(','),
         },
         callback: () => {
           this.setState({
@@ -221,7 +226,7 @@ export default class MainList extends PureComponent {
         },
       });
     };
-    confirm({
+    Modal.confirm({
       title: '删除',
       content: '确定永久删除选定的记录吗？',
       okText: '确定删除',
@@ -285,7 +290,18 @@ export default class MainList extends PureComponent {
       payload: key,
       callback: () => {
         this.handleModalVisible(true);
+        this.setState({
+          isNew: false,
+          editingKey: key,
+        });
       },
+    });
+  };
+
+  handleShow = (e, key) => {
+    this.props.dispatch({
+      type: 'example/showprofile',
+      payload: key,
     });
   };
 
@@ -294,6 +310,10 @@ export default class MainList extends PureComponent {
       type: 'example/clearDomain',
     });
     this.handleModalVisible(true);
+    this.setState({
+      isNew: true,
+      editingKey: '',
+    });
   };
 
   handleSave = fields => {
@@ -302,13 +322,15 @@ export default class MainList extends PureComponent {
     // Object.keys(fields).map(key => {
     //   formData.append(key, fields[key]);
     // })
+    const { isNew, editingKey } = this.state;
 
     this.props.dispatch({
       type: 'example/save',
       // payload: formData,
       payload: {
         ...fields,
-        isNew: true,
+        isNew,
+        userid: editingKey,
       },
       callback: response => {
         if (response.code === 200) {
@@ -403,7 +425,7 @@ export default class MainList extends PureComponent {
 
   render() {
     const { example: { data, domain }, dictionary, loading } = this.props;
-    const { selectedRows, modalVisible } = this.state;
+    const { selectedRows, modalVisible, isNew } = this.state;
 
     const columns = [
       {
@@ -434,9 +456,9 @@ export default class MainList extends PureComponent {
         title: '操作',
         render: (text, record) => (
           <Fragment>
-            <a onClick={e => this.handleEdit(e, record.key)}>编辑</a>
+            <a onClick={e => this.handleEdit(e, record.userid)}>编辑</a>
             <Divider type="vertical" />
-            <a href="">查看</a>
+            <a onClick={e => this.handleShow(e, record.userid)}>查看</a>
           </Fragment>
         ),
       },
@@ -447,6 +469,7 @@ export default class MainList extends PureComponent {
       handleModalVisible: this.handleModalVisible,
       dictionary,
       domain,
+      isNew,
     };
 
     return (
@@ -473,6 +496,7 @@ export default class MainList extends PureComponent {
               columns={columns}
               onSelectRow={this.handleSelectRows}
               onChange={this.handleStandardTableChange}
+              rowKey="userid"
             />
           </div>
         </Card>

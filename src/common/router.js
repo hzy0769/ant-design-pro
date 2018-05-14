@@ -177,6 +177,10 @@ export const getRouterData = app => {
       ),
       authority: ['admin', 'clouduser'],
     },
+    '/example/main-profile/:pid': {
+      component: dynamicWrapper(app, ['example'], () => import('../routes/Example/MainProfile')),
+      authority: ['admin', 'clouduser'],
+    },
     // =========下面是本系统真正的路径====================
     '/user/cloudlogin': {
       component: dynamicWrapper(app, ['login'], () => import('../routes/User/CloudLogin')),
