@@ -1,4 +1,3 @@
-import { routerRedux } from 'dva/router';
 import { searchAdminUser, saveAdminUser, removeAdminUser, getAdminUser } from '../services/lmapi';
 
 export default {
@@ -41,9 +40,6 @@ export default {
     *remove({ payload, callback }, { call }) {
       const response = yield call(removeAdminUser, payload);
       if (callback) callback(response);
-    },
-    *showprofile({ payload }, { put }) {
-      yield put(routerRedux.push(`/example/main-profile/${payload}`));
     },
   },
 

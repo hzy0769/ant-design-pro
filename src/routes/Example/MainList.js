@@ -1,5 +1,6 @@
 import React, { PureComponent, Fragment } from 'react';
 import { connect } from 'dva';
+import { routerRedux } from 'dva/router';
 import moment from 'moment';
 import {
   Row,
@@ -299,10 +300,7 @@ export default class MainList extends PureComponent {
   };
 
   handleShow = (e, key) => {
-    this.props.dispatch({
-      type: 'example/showprofile',
-      payload: key,
-    });
+    this.props.dispatch(routerRedux.push(`/example/main-profile/${key}`));
   };
 
   handleAdd = () => {
