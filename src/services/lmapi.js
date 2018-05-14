@@ -8,6 +8,9 @@ export async function getSysCodeDict(codetype) {
 export async function searchAdminUser(params) {
   return request(`/api/admin/user/sysUser/search?${stringify(params)}`);
 }
+export async function getAdminUser(params) {
+  return request(`/api/admin/user/sysUser/` + params);
+}
 export async function saveAdminUser(params) {
   return request(`/api/admin/user/sysUser`, {
     method: 'POST',

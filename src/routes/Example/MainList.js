@@ -26,20 +26,44 @@ const getValue = obj =>
     .map(key => obj[key])
     .join(',');
 
-const CreateForm = Form.create()(props => {
-  const { modalVisible, form, handleAdd, handleModalVisible, dictionary } = props;
+const CreateForm = Form.create({
+  mapPropsToFields(props) {
+    let { status } = props.domain;
+    if (status) {
+      status = status.toString();
+    }
+    return {
+      fullname: Form.createFormField({
+        value: props.domain.fullname,
+      }),
+      account: Form.createFormField({
+        value: props.domain.account,
+      }),
+      mobile: Form.createFormField({
+        value: props.domain.mobile,
+      }),
+      status: Form.createFormField({
+        value: status,
+      }),
+      accounttype: Form.createFormField({
+        value: props.domain.accounttype,
+      }),
+    };
+  },
+})(props => {
+  const { modalVisible, form, handleSave, handleModalVisible, dictionary } = props;
   const okHandle = () => {
     form.validateFields((err, fieldsValue) => {
       if (err) return;
       form.resetFields();
-      handleAdd(fieldsValue);
+      handleSave(fieldsValue);
     });
   };
 
   return (
     <Modal
       width={1024}
-      title="新建规则"
+      title="用户管理"
       visible={modalVisible}
       onOk={okHandle}
       onCancel={() => handleModalVisible()}
@@ -255,7 +279,24 @@ export default class MainList extends PureComponent {
     });
   };
 
-  handleAdd = fields => {
+  handleEdit = (e, key) => {
+    this.props.dispatch({
+      type: 'example/loadDomain',
+      payload: key,
+      callback: () => {
+        this.handleModalVisible(true);
+      },
+    });
+  };
+
+  handleAdd = () => {
+    this.props.dispatch({
+      type: 'example/clearDomain',
+    });
+    this.handleModalVisible(true);
+  };
+
+  handleSave = fields => {
     // var formData = new FormData();
     // formData.append('isNew', true);
     // Object.keys(fields).map(key => {
@@ -361,7 +402,7 @@ export default class MainList extends PureComponent {
   }
 
   render() {
-    const { example: { data }, dictionary, loading } = this.props;
+    const { example: { data, domain }, dictionary, loading } = this.props;
     const { selectedRows, modalVisible } = this.state;
 
     const columns = [
@@ -391,20 +432,21 @@ export default class MainList extends PureComponent {
       },
       {
         title: '操作',
-        render: () => (
+        render: (text, record) => (
           <Fragment>
-            <a href="">配置</a>
+            <a onClick={e => this.handleEdit(e, record.key)}>编辑</a>
             <Divider type="vertical" />
-            <a href="">订阅警报</a>
+            <a href="">查看</a>
           </Fragment>
         ),
       },
     ];
 
     const parentMethods = {
-      handleAdd: this.handleAdd,
+      handleSave: this.handleSave,
       handleModalVisible: this.handleModalVisible,
       dictionary,
+      domain,
     };
 
     return (
@@ -413,7 +455,7 @@ export default class MainList extends PureComponent {
           <div className={styles.tableList}>
             <div className={styles.tableListForm}>{this.renderForm()}</div>
             <div className={styles.tableListOperator}>
-              <Button icon="plus" type="primary" onClick={() => this.handleModalVisible(true)}>
+              <Button icon="plus" type="primary" onClick={this.handleAdd}>
                 新建
               </Button>
               {selectedRows.length > 0 && (
