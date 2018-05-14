@@ -42,7 +42,7 @@ export default {
           },
         });
         reloadAuthorized();
-        yield put(routerRedux.push('/user/login'));
+        yield put(routerRedux.push('/user/cloudlogin'));
       }
     },
     *cloudLogin({ payload }, { call, put }) {
@@ -64,6 +64,7 @@ export default {
     // 官方演示登录
     changeLoginStatus(state, { payload }) {
       setAuthority(payload.currentAuthority);
+      setAuthorityCloud({ userAccount: '' }); // 官方演示登录的话，退出我们的登录
       return {
         ...state,
         status: payload.status,

@@ -160,11 +160,18 @@ const menuData = [
       },
     ],
   },
+  // 下面是自己系统的菜单
   {
-    name: '我的例子',
+    name: '订单报表',
+    icon: 'dashboard',
+    path: 'dashboard/analysis',
+    authority: ['clouduser'],
+  },
+  {
+    name: 'CRUD例子',
     icon: 'table',
     path: 'example',
-    authority: 'admin',
+    authority: ['admin', 'clouduser'],
     children: [
       {
         name: '分页表格',

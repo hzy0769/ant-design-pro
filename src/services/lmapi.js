@@ -26,7 +26,7 @@ export async function removeAdminUser(params) {
   });
 }
 export async function loginAdminUser(params) {
-  return request(`/admin/user/sysUser/login`, {
+  return request(`/api/admin/user/sysUser/login`, {
     method: 'POST',
     'Content-Type': 'application/x-www-form-urlencoded;',
     body: params,

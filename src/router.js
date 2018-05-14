@@ -25,8 +25,8 @@ function RouterConfig({ history, app }) {
           <AuthorizedRoute
             path="/"
             render={props => <BasicLayout {...props} />}
-            authority={['admin', 'user', 'guest']}
-            redirectPath="/user/login"
+            authority={['admin', 'user', 'guest', 'clouduser']}
+            redirectPath="/user/cloudlogin"
           />
         </Switch>
       </ConnectedRouter>

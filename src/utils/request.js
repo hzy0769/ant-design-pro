@@ -2,6 +2,7 @@ import fetch from 'dva/fetch';
 import { notification } from 'antd';
 import { routerRedux } from 'dva/router';
 import store from '../index';
+import { getAuthorityToken } from './authority';
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
@@ -47,6 +48,10 @@ export default function request(url, options) {
     credentials: 'include',
   };
   const newOptions = { ...defaultOptions, ...options };
+  newOptions.headers = {
+    'authority-token': getAuthorityToken(),
+    ...newOptions.headers,
+  };
   if (newOptions.method === 'POST' || newOptions.method === 'PUT') {
     if (!(newOptions.body instanceof FormData)) {
       // console.log(newOptions['Content-Type']);

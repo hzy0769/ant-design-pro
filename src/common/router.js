@@ -175,7 +175,11 @@ export const getRouterData = app => {
       component: dynamicWrapper(app, ['example', 'dictionary'], () =>
         import('../routes/Example/MainList')
       ),
-      authority: 'admin',
+      authority: ['admin', 'clouduser'],
+    },
+    // =========下面是本系统真正的路径====================
+    '/user/cloudlogin': {
+      component: dynamicWrapper(app, ['login'], () => import('../routes/User/CloudLogin')),
     },
   };
   // Get name from ./menu.js or just set it in the router data.
