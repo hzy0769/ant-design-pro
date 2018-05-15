@@ -1,10 +1,11 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'dva';
-import { Card, Divider } from 'antd';
+import { Button, Card, Divider } from 'antd';
 import DescriptionList from 'components/DescriptionList';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 
 const { Description } = DescriptionList;
+const ButtonGroup = Button.Group;
 
 @connect(({ example, loading }) => ({
   example,
@@ -19,11 +20,24 @@ export default class MainProfile extends Component {
     });
   }
 
+  goback() {
+    this.history.back();
+  }
+
   render() {
     const { example: { domain } } = this.props;
+    const action = (
+      <Fragment>
+        <ButtonGroup>
+          <Button icon="rollback" onClick={this.goback}>
+            返回
+          </Button>
+        </ButtonGroup>
+      </Fragment>
+    );
 
     return (
-      <PageHeaderLayout title="用户管理">
+      <PageHeaderLayout title="用户管理" action={action}>
         <Card bordered={false}>
           <DescriptionList size="large" title="基础信息" style={{ marginBottom: 32 }}>
             <Description term="用户id">{domain.userid}</Description>
