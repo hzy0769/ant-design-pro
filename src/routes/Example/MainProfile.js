@@ -20,9 +20,9 @@ export default class MainProfile extends Component {
     });
   }
 
-  goback() {
-    this.history.back();
-  }
+  goback = () => {
+    history.back();
+  };
 
   render() {
     const { example: { domain } } = this.props;
