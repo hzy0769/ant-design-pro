@@ -7,3 +7,7 @@ export async function query() {
 export async function queryCurrent() {
   return request('/api/currentUser');
 }
+
+export async function queryMyMenuData() {
+  return request('/api/admin/res/sysRes/myMenus');
+}

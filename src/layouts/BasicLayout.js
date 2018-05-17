@@ -14,7 +14,7 @@ import SiderMenu from '../components/SiderMenu';
 import NotFound from '../routes/Exception/404';
 import { getRoutes } from '../utils/utils';
 import Authorized from '../utils/Authorized';
-import { getMenuData } from '../common/menu';
+// import { getMenuData } from '../common/menu';
 import logo from '../assets/logo.svg';
 
 const { Content, Header, Footer } = Layout;
@@ -23,21 +23,21 @@ const { AuthorizedRoute, check } = Authorized;
 /**
  * 根据菜单取得重定向地址.
  */
-const redirectData = [];
-const getRedirect = item => {
-  if (item && item.children) {
-    if (item.children[0] && item.children[0].path) {
-      redirectData.push({
-        from: `${item.path}`,
-        to: `${item.children[0].path}`,
-      });
-      item.children.forEach(children => {
-        getRedirect(children);
-      });
-    }
-  }
-};
-getMenuData().forEach(getRedirect);
+// const redirectData = [];
+// const getRedirect = item => {
+//   if (item && item.children) {
+//     if (item.children[0] && item.children[0].path) {
+//       redirectData.push({
+//         from: `${item.path}`,
+//         to: `${item.children[0].path}`,
+//       });
+//       item.children.forEach(children => {
+//         getRedirect(children);
+//       });
+//     }
+//   }
+// };
+// getMenuData().forEach(getRedirect);
 
 /**
  * 获取面包屑映射
@@ -93,12 +93,13 @@ class BasicLayout extends React.PureComponent {
     isMobile,
   };
   getChildContext() {
-    const { location, routerData } = this.props;
+    const { menuData, location, routerData } = this.props;
     return {
       location,
-      breadcrumbNameMap: getBreadcrumbNameMap(getMenuData(), routerData),
+      breadcrumbNameMap: getBreadcrumbNameMap(menuData, routerData),
     };
   }
+  componentWillMount() {}
   componentDidMount() {
     this.enquireHandler = enquireScreen(mobile => {
       this.setState({
@@ -182,6 +183,8 @@ class BasicLayout extends React.PureComponent {
   render() {
     const {
       currentUser,
+      menuData,
+      redirectData,
       collapsed,
       fetchingNotices,
       notices,
@@ -189,6 +192,10 @@ class BasicLayout extends React.PureComponent {
       match,
       location,
     } = this.props;
+    // console.log('menuData')
+    // console.log(menuData)
+    // console.log('redirectData')
+    // console.log(redirectData)
     const bashRedirect = this.getBashRedirect();
     const layout = (
       <Layout>
@@ -198,7 +205,7 @@ class BasicLayout extends React.PureComponent {
           // If you do not have the Authorized parameter
           // you will be forced to jump to the 403 interface without permission
           Authorized={Authorized}
-          menuData={getMenuData()}
+          menuData={menuData}
           collapsed={collapsed}
           location={location}
           isMobile={this.state.isMobile}
@@ -281,8 +288,10 @@ class BasicLayout extends React.PureComponent {
   }
 }
 
-export default connect(({ user, global, loading }) => ({
+export default connect(({ user, login, global, loading }) => ({
   currentUser: user.currentUser,
+  menuData: login.menuData,
+  redirectData: login.redirectData,
   collapsed: global.collapsed,
   fetchingNotices: loading.effects['global/fetchNotices'],
   notices: global.notices,
