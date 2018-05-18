@@ -6,6 +6,7 @@ import { setAuthority, setAuthorityCloud } from '../utils/authority';
 import { reloadAuthorized } from '../utils/Authorized';
 import { getMenuData, formatterMenu } from '../common/menu';
 
+const STORE_MENUS = 'antd-menus';
 const redirectData = [];
 const getRedirect = item => {
   if (item && item.children) {
@@ -21,13 +22,23 @@ const getRedirect = item => {
   }
 };
 
+let menuData = [];
+const initDefaultMenuData = () => {
+  const menujson = sessionStorage.getItem(STORE_MENUS);
+  if (menujson != null) {
+    menuData = JSON.parse(menujson);
+    menuData.forEach(getRedirect);
+  }
+};
+initDefaultMenuData();
+
 export default {
   namespace: 'login',
 
   state: {
     status: undefined,
-    menuData: [],
-    redirectData: [],
+    menuData,
+    redirectData,
   },
 
   effects: {
@@ -94,7 +105,7 @@ export default {
     changeLoginStatus(state, { payload }) {
       setAuthorityCloud({ userAccount: '' }); // 官方演示登录的话，先退出我们的登录
       setAuthority(payload.currentAuthority);
-      sessionStorage.removeItem('antd-menus');
+      sessionStorage.removeItem(STORE_MENUS);
       return {
         ...state,
         status: payload.status,
@@ -104,7 +115,7 @@ export default {
     // 对接ljdp后端登录
     changeCloudLoginStatus(state, { payload }) {
       setAuthorityCloud(payload.user);
-      sessionStorage.removeItem('antd-menus');
+      sessionStorage.removeItem(STORE_MENUS);
       let loginstatus = '';
       if (payload.code === 200) {
         loginstatus = 'ok';
@@ -120,10 +131,9 @@ export default {
     updateMenus(state, action) {
       const { payload } = action;
       const { code, menus } = payload;
-      let menuData = [];
       if (code === 200) {
         menuData = formatterMenu(menus);
-        // sessionStorage.setItem('antd-menus', JSON.stringify(menuData));
+        sessionStorage.setItem(STORE_MENUS, JSON.stringify(menuData));
       }
       menuData.forEach(getRedirect);
       return {
@@ -133,7 +143,7 @@ export default {
       };
     },
     useExampleMenus(state) {
-      // sessionStorage.setItem('antd-menus', JSON.stringify(getMenuData()));
+      sessionStorage.setItem(STORE_MENUS, JSON.stringify(getMenuData()));
       getMenuData().forEach(getRedirect);
       return {
         ...state,
