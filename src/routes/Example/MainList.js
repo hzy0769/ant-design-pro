@@ -18,6 +18,7 @@ import {
 import StandardTable from 'components/StandardTable';
 import DictSelect from 'components/DictSelect';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
+import { getAuthorityToken } from '../../utils/authority';
 
 import styles from '../List/TableList.less';
 
@@ -279,6 +280,32 @@ export default class MainList extends PureComponent {
     this.doSearch();
   };
 
+  handleExport = e => {
+    e.preventDefault();
+    const { form } = this.props;
+
+    form.validateFields((err, fieldsValue) => {
+      if (err) return;
+
+      const values = {
+        ...fieldsValue,
+        ge_createtime:
+          fieldsValue.ge_createtime && fieldsValue.ge_createtime.format('YYYY-MM-DD HH:mm:ss'),
+        le_createtime:
+          fieldsValue.le_createtime && fieldsValue.le_createtime.format('YYYY-MM-DD HH:mm:ss'),
+      };
+
+      let params = '';
+      for (const v in values) {
+        if (values[v] !== null && values[v] !== undefined) {
+          params += `${v}=${values[v]}&`;
+        }
+      }
+      // console.log(params);
+      open(`/api/admin/user/sysUser/export?${params}tokenid=${getAuthorityToken()}`);
+    });
+  };
+
   handleModalVisible = flag => {
     this.setState({
       modalVisible: !!flag,
@@ -405,11 +432,14 @@ export default class MainList extends PureComponent {
         </Row>
         <div style={{ overflow: 'hidden' }}>
           <span style={{ float: 'right', marginBottom: 24 }}>
-            <Button type="primary" htmlType="submit">
+            <Button icon="search" type="primary" htmlType="submit">
               查询
             </Button>
             <Button style={{ marginLeft: 8 }} onClick={this.handleFormReset}>
               重置
+            </Button>
+            <Button icon="export" style={{ marginLeft: 8 }} onClick={this.handleExport}>
+              导出
             </Button>
           </span>
         </div>
