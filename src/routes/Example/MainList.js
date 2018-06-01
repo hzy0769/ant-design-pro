@@ -306,6 +306,10 @@ export default class MainList extends PureComponent {
     });
   };
 
+  handleImport = () => {
+    this.props.dispatch(routerRedux.push('/example/main-import'));
+  };
+
   handleModalVisible = flag => {
     this.setState({
       modalVisible: !!flag,
@@ -440,6 +444,9 @@ export default class MainList extends PureComponent {
             </Button>
             <Button icon="export" style={{ marginLeft: 8 }} onClick={this.handleExport}>
               导出
+            </Button>
+            <Button icon="cloud-download-o" style={{ marginLeft: 8 }} onClick={this.handleImport}>
+              导入
             </Button>
           </span>
         </div>

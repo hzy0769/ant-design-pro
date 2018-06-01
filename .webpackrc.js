@@ -29,5 +29,9 @@ export default {
       target: 'http://127.0.0.1:8080/',
       changeOrigin: true,
     },
+    '/api/ljdp': {
+      target: 'http://127.0.0.1:8080/',
+      changeOrigin: true,
+    },
   },
 };

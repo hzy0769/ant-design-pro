@@ -1,4 +1,10 @@
-import { searchAdminUser, saveAdminUser, removeAdminUser, getAdminUser } from '../services/lmapi';
+import {
+  searchAdminUser,
+  saveAdminUser,
+  removeAdminUser,
+  getAdminUser,
+  ljdpFileBatchProcess,
+} from '../services/lmapi';
 
 export default {
   namespace: 'example',
@@ -39,6 +45,10 @@ export default {
     },
     *remove({ payload, callback }, { call }) {
       const response = yield call(removeAdminUser, payload);
+      if (callback) callback(response);
+    },
+    *submitImport({ payload, callback }, { call }) {
+      const response = yield call(ljdpFileBatchProcess, payload);
       if (callback) callback(response);
     },
   },
