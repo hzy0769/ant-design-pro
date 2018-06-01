@@ -61,6 +61,7 @@ module.exports = {
     'require-yield': [1],
     'linebreak-style': ['off', 'windows'],
     'prefer-template': 'off',
+    'no-param-reassign': 1,
   },
   parserOptions: {
     ecmaFeatures: {
